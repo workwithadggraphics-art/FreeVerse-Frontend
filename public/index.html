@@ -360,11 +360,21 @@ window.addEventListener('DOMContentLoaded', () => {
   // rather than waiting on Firebase Auth to resolve first.
   if(parseHash()[0] === 'p') render();
 });
-auth.onAuthStateChanged(async () => {
+auth.onAuthStateChanged(async (user) => {
+  if(user){
+    await db.collection('users').doc(user.uid).set({
+      name: user.displayName || '',
+      email: user.email || null
+    }, { merge: true });
+  }
   await loadSession();
+  const parts = parseHash();
+  if(user && (parts[0]==='signin' || parts[0]===undefined || parts[0]==='')){
+    nav(SESSION.service ? '#/dashboard' : '#/onboarding');
+    return;
+  }
   render();
 });
-
 
 function parseHash(){
   const h = (window.location.hash || '#/').replace(/^#/, '');
