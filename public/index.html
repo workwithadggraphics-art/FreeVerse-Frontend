@@ -1110,14 +1110,38 @@ function bindEvents(){
       nav('#/dashboard');
     });
   }
-  const googleBtn = document.getElementById('google-continue');
-if(googleBtn){
-  googleBtn.addEventListener('click', ()=>{
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithRedirect(provider).catch(err=>{
-  console.error(err);
-  showToast('ERROR: ' + err.code + ' — ' + err.message);
-});
+  const authForm = document.getElementById('auth-form');
+if(authForm){
+  authForm.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const fd = new FormData(authForm);
+    const email = fd.get('email').trim();
+    const password = fd.get('password');
+    const submitBtn = authForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true; submitBtn.textContent = 'Please wait…';
+    try{
+      if(AUTH_MODE === 'signup'){
+        const name = fd.get('name').trim();
+        const { user } = await auth.createUserWithEmailAndPassword(email, password);
+        await user.updateProfile({ displayName: name });
+        await db.collection('users').doc(user.uid).set({ name, email }, { merge:true });
+      } else {
+        await auth.signInWithEmailAndPassword(email, password);
+      }
+      await loadSession();
+      nav(SESSION.service ? '#/dashboard' : '#/onboarding');
+    }catch(err){
+      console.error(err);
+      const messages = {
+        'auth/email-already-in-use': 'That email is already registered — try signing in instead.',
+        'auth/invalid-email': 'That email address looks invalid.',
+        'auth/weak-password': 'Password should be at least 6 characters.',
+        'auth/wrong-password': 'Incorrect password.',
+        'auth/user-not-found': "We couldn't find an account with that email."
+      };
+      showToast(messages[err.code] || err.message);
+      submitBtn.disabled = false; submitBtn.textContent = AUTH_MODE==='signup' ? 'Create account' : 'Sign in';
+    }
   });
 }
   const dropzone = document.getElementById('dropzone');
