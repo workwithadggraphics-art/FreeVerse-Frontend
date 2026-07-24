@@ -1097,9 +1097,9 @@ if(googleBtn){
   googleBtn.addEventListener('click', ()=>{
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithRedirect(provider).catch(err=>{
-      console.error(err);
-      showToast('Sign-in failed — check your Firebase Auth setup');
-    });
+  console.error(err);
+  showToast('ERROR: ' + err.code + ' — ' + err.message);
+});
   });
 }
   const dropzone = document.getElementById('dropzone');
