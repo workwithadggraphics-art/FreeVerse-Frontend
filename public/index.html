@@ -226,14 +226,27 @@ input,select,textarea{font-family:inherit;}
    See FRONTEND_INTEGRATION.md in the backend folder for the full wiring notes.
    ============================================================ */
 
-// -------- Fill in from Firebase console → Project settings → Your apps --------
-const FIREBASE_CONFIG = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB3W1yV7VUZaEAZT8V2OtwR7Zu0vhilqLg",
+  authDomain: "freeverse-d21a3.firebaseapp.com",
+  projectId: "freeverse-d21a3",
+  storageBucket: "freeverse-d21a3.firebasestorage.app",
+  messagingSenderId: "146398305283",
+  appId: "1:146398305283:web:53016e4ef5463b34c08236",
+  measurementId: "G-SFH6F5BLHL"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 };
 firebase.initializeApp(FIREBASE_CONFIG);
 const auth = firebase.auth();
@@ -241,7 +254,7 @@ const db = firebase.firestore();
 
 // -------- Render backend (replaces what used to be Cloud Functions) --------
 // Fill this in once you've deployed /freeverse-render-backend to Render.
-const BACKEND_URL = "https://YOUR-APP.onrender.com";
+const BACKEND_URL = "https://freeverse-backend.onrender.com;
 
 // -------- Customize the hero illustration here --------
 // Swap these URLs for real client photos any time — the layout adapts automatically.
