@@ -1083,26 +1083,15 @@ function bindEvents(){
     });
   }
   const googleBtn = document.getElementById('google-continue');
-  if(googleBtn){
-    googleBtn.addEventListener('click', async ()=>{
-      try{
-        const provider = new firebase.auth.GoogleAuthProvider();
-        const { user } = await auth.signInWithPopup(provider);
-        // No Cloud Function trigger anymore — write the user's profile doc
-        // directly. merge:true so this is safe to call on every sign-in,
-        // not just the first one (won't clobber service/business/plan).
-        await db.collection('users').doc(user.uid).set({
-          name: user.displayName || '',
-          email: user.email || null
-        }, { merge: true });
-        await loadSession();
-        nav(SESSION.service ? '#/dashboard' : '#/onboarding');
-      }catch(err){
-        console.error(err);
-        showToast('Sign-in failed — check your Firebase Auth setup');
-      }
+if(googleBtn){
+  googleBtn.addEventListener('click', ()=>{
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithRedirect(provider).catch(err=>{
+      console.error(err);
+      showToast('Sign-in failed — check your Firebase Auth setup');
     });
-  }
+  });
+}
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('file-input');
   const chooseBtn = document.getElementById('choose-files-btn');
