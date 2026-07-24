@@ -386,45 +386,46 @@ async function render(){
   const parts = parseHash();
   const app = document.getElementById('app');
   let html = '';
+  try{
+    if(parts[0] === 'p' && parts[1]){
+      const project = await getProject(parts[1]);
+      if(!project){ html = notFoundView(); }
+      else if(parts[2] === 'review'){ html = await clientReviewView(project); }
+      else if(parts[2] === 'thanks'){ html = clientThanksView(project); }
+      else { html = await clientProjectView(project); }
+      app.innerHTML = html; bindEvents(); return;
+    }
 
-  // public client routes work with no session required
-  if(parts[0] === 'p' && parts[1]){
-    const project = await getProject(parts[1]);
-    if(!project){ html = notFoundView(); }
-    else if(parts[2] === 'review'){ html = await clientReviewView(project); }
-    else if(parts[2] === 'thanks'){ html = clientThanksView(project); }
-    else { html = await clientProjectView(project); }
-    app.innerHTML = html; bindEvents(); return;
-  }
+    const needsSession = ['onboarding','welcome-email','dashboard','projects','create-project','project-details','project-created','analytics','notifications','settings','upgrade','review'];
+    if(!SESSION && (needsSession.includes(parts[0]))){
+      nav('#/'); return;
+    }
 
-  // gate app screens behind onboarding/session
-  const needsSession = ['onboarding','welcome-email','dashboard','projects','create-project','project-details','project-created','analytics','notifications','settings','upgrade','review'];
-  if(!SESSION && (needsSession.includes(parts[0]))){
-    nav('#/'); return;
+    switch(parts[0]){
+      case undefined:
+      case '': html = heroView(); break;
+      case 'onboarding': html = onboardingView(); break;
+      case 'signin': html = signinView(); break;
+      case 'welcome-email': html = welcomeEmailView(); break;
+      case 'dashboard': html = await dashboardView(); break;
+      case 'projects': html = await projectsListView(); break;
+      case 'create-project': html = createProjectView(); break;
+      case 'project-details': html = projectDetailsView(); break;
+      case 'project-created': html = await projectCreatedView(parts[1]); break;
+      case 'analytics': html = await analyticsView(); break;
+      case 'notifications': html = await notificationsView(); break;
+      case 'settings': html = settingsView(); break;
+      case 'upgrade': html = upgradeView(); break;
+      case 'review': html = await reviewDetailView(parts[1]); break;
+      default: html = notFoundView();
+    }
+    app.innerHTML = html;
+    bindEvents();
+  }catch(err){
+    console.error('render failed:', err);
+    showToast('ERROR: ' + (err.message || err.code || 'unknown'));
   }
-
-  switch(parts[0]){
-    case undefined:
-    case '': html = heroView(); break;
-    case 'onboarding': html = onboardingView(); break;
-    case 'signin': html = signinView(); break;
-    case 'welcome-email': html = welcomeEmailView(); break;
-    case 'dashboard': html = await dashboardView(); break;
-    case 'projects': html = await projectsListView(); break;
-    case 'create-project': html = createProjectView(); break;
-    case 'project-details': html = projectDetailsView(); break;
-    case 'project-created': html = await projectCreatedView(parts[1]); break;
-    case 'analytics': html = await analyticsView(); break;
-    case 'notifications': html = await notificationsView(); break;
-    case 'settings': html = settingsView(); break;
-    case 'upgrade': html = upgradeView(); break;
-    case 'review': html = await reviewDetailView(parts[1]); break;
-    default: html = notFoundView();
-  }
-  app.innerHTML = html;
-  bindEvents();
 }
-
 function notFoundView(){
   return `<div class="center-page"><div class="card" style="padding:40px;text-align:center;max-width:380px;">
     <h2 class="serif">Nothing here</h2>
