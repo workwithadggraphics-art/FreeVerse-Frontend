@@ -485,23 +485,41 @@ function radialSvg(){
 }
 
 // ---------------- 1. Sign in with Google ----------------
+let AUTH_MODE = 'signup';
 function signinView(){
+  const isSignup = AUTH_MODE === 'signup';
   return `<div class="center-page"><div class="auth-shell">
     <div class="step-label">Step 1 of 2</div>
     <div class="progress-dots"><span class="done"></span><span></span></div>
-    <div class="card" style="padding:36px;text-align:center;">
-      <div style="font-size:30px;margin-bottom:6px;">G</div>
-      <h2>Sign in with Google</h2>
-      <p class="lede">Use your Google account to continue to FreeVerse.</p>
-      <button class="google-btn" id="google-continue">
-        <span style="font-weight:700;">G</span> Continue with Google
-      </button>
-      <p class="hint" style="margin-top:14px;">One Google account per user</p>
-      <p class="hint" style="margin-top:22px;">By continuing, you agree to our Terms of Service and Privacy Policy</p>
+    <div class="card" style="padding:32px;">
+      <h2>${isSignup ? 'Create your account' : 'Welcome back'}</h2>
+      <p class="lede">${isSignup ? 'Set up your FreeVerse workspace.' : 'Sign in to continue to FreeVerse.'}</p>
+      <form id="auth-form">
+        ${isSignup ? `<div class="field"><label>Your name</label><input required name="name" placeholder="e.g. John Adeyemi"></div>` : ''}
+        <div class="field"><label>Email</label><input required type="email" name="email" placeholder="you@email.com"></div>
+        <div class="field"><label>Password</label><input required type="password" name="password" placeholder="At least 6 characters" minlength="6"></div>
+        <button class="btn btn-primary btn-block" type="submit">${isSignup ? 'Create account' : 'Sign in'}</button>
+      </form>
+      <p class="hint" style="text-align:center;margin-top:14px;">
+        ${isSignup ? 'Already have an account?' : "Don't have an account?"}
+        <a href="#" onclick="toggleAuthMode(event)" style="text-decoration:underline;color:var(--ink);">${isSignup ? 'Sign in' : 'Create one'}</a>
+      </p>
+      ${!isSignup ? `<p class="hint" style="text-align:center;margin-top:6px;"><a href="#" onclick="forgotPassword(event)" style="text-decoration:underline;">Forgot password?</a></p>` : ''}
     </div>
   </div></div>`;
 }
-
+window.toggleAuthMode = function(e){
+  e.preventDefault();
+  AUTH_MODE = AUTH_MODE === 'signup' ? 'login' : 'signup';
+  render();
+};
+window.forgotPassword = async function(e){
+  e.preventDefault();
+  const email = prompt('Enter your account email to receive a reset link:');
+  if(!email) return;
+  try{ await auth.sendPasswordResetEmail(email); showToast('Reset link sent — check your inbox'); }
+  catch(err){ showToast(err.message); }
+};
 // ---------------- 2. Onboarding (service/business — name & photo come from Google) ----------------
 function onboardingView(){
   return `<div class="center-page"><div class="auth-shell">
