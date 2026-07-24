@@ -21,7 +21,6 @@ jobs:
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only firestore:rules,hosting
-        env:
+          args: deploy --only firestore:rules,firestore:indexes,hosting
           GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
