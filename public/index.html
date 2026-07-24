@@ -731,6 +731,7 @@ function renderFileList(){
   const over = total > FREE_LIMIT_BYTES;
   list.innerHTML = DRAFT.files.map((f,i)=>`
     <div class="file-chip">
+      ${f.preview ? `<img src="${f.preview}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;margin-right:2px;">` : ''}
       <span class="name">${esc(f.name)}</span>
       <span class="size">${fmtBytes(f.size)}</span>
       <button onclick="removeFile(${i})" type="button">✕</button>
