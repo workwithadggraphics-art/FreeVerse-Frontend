@@ -837,13 +837,15 @@ window.downloadProjectFiles = async function(id){
 function fileIconDataUri(){ return 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="140"><rect width="100%" height="100%" fill="%23EFE9DA"/><text x="50%" y="50%" font-size="14" text-anchor="middle" fill="%238A8371">file preview unavailable</text></svg>'); }
 window.galleryStep = function(dir){
   const g = document.getElementById('gallery');
-  const imgs = g.querySelectorAll('img');
+  const items = g.querySelectorAll('.gallery-item');
   let idx = parseInt(g.dataset.idx);
-  imgs[idx].style.display='none';
-  idx = (idx+dir+imgs.length)%imgs.length;
-  imgs[idx].style.display='';
+  items[idx].style.display='none';
+  const vid = items[idx].querySelector('video');
+  if(vid) vid.pause();
+  idx = (idx+dir+items.length)%items.length;
+  items[idx].style.display='';
   g.dataset.idx = idx;
-  document.getElementById('gallery-count').textContent = (idx+1)+' / '+imgs.length;
+  document.getElementById('gallery-count').textContent = (idx+1)+' / '+items.length;
 };
 
 async function clientReviewView(p){
