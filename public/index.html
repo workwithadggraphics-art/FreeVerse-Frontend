@@ -593,14 +593,21 @@ function sidebar(active, unread){
     ['analytics','Analytics'],
     ['settings','Settings']
   ];
-  return `<div class="sidebar">
+  return `<div class="sidebar" id="sidebar">
+    <button class="mobile-menu-btn" style="display:flex;margin-bottom:14px;" onclick="toggleMobileMenu()">✕</button>
     <div class="logo">FreeVerse</div>
     ${items.map(([key,label,badge])=>`
-      <a class="side-link ${active===key?'active':''}" href="#/${key}">
+      <a class="side-link ${active===key?'active':''}" href="#/${key}" onclick="closeMobileMenu()">
         ${label} ${badge?`<span class="badge">${badge}</span>`:''}
       </a>`).join('')}
   </div>`;
 }
+window.toggleMobileMenu = function(){
+  document.getElementById('sidebar').classList.toggle('open');
+};
+window.closeMobileMenu = function(){
+  document.getElementById('sidebar').classList.remove('open');
+};
 function topbar(title){
   const av = SESSION.avatar ? `<img src="${SESSION.avatar}">` : initials(SESSION.name);
   return `<div class="topbar">
