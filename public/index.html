@@ -804,8 +804,16 @@ async function clientProjectView(p){
         </div>
       </div>
     </div>
-    <div class="gallery" id="gallery" data-idx="0">
-      ${gallery.map((f,i)=>`<img data-i="${i}" style="${i===0?'':'display:none'}" src="${f.url || f.preview || fileIconDataUri(f)}">`).join('')}
+   <div class="gallery" id="gallery" data-idx="0">
+      ${gallery.map((f,i)=>{
+        const isVideo = (f.type||'').startsWith('video/');
+        const src = f.url || f.preview || fileIconDataUri(f);
+        return `<div class="gallery-item" data-i="${i}" style="${i===0?'':'display:none;'}width:100%;height:100%;">
+          ${isVideo
+            ? `<video src="${src}" controls playsinline style="width:100%;height:100%;object-fit:contain;background:#000;"></video>`
+            : `<img src="${src}" style="width:100%;height:100%;object-fit:cover;">`}
+        </div>`;
+      }).join('')}
       ${gallery.length>1?`<button class="gallery-nav prev" onclick="galleryStep(-1)">‹</button><button class="gallery-nav next" onclick="galleryStep(1)">›</button>
       <div class="gallery-count" id="gallery-count">1 / ${gallery.length}</div>`:''}
     </div>
