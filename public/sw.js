@@ -3,7 +3,7 @@
 // is a live app, not a static site) — this just means the UI itself loads
 // instantly and works even with a flaky connection.
 
-const CACHE_NAME = 'freeverse-shell-v1';
+const CACHE_NAME = 'freeverse-shell-v2';
 const SHELL_FILES = [
   '/',
   '/index.html',
