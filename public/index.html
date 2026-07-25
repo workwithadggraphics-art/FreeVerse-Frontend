@@ -407,6 +407,7 @@ function parseHash(){
 }
 
 async function render(){
+await authReady;
   const parts = parseHash();
   const app = document.getElementById('app');
   let html = '';
