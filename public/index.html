@@ -792,7 +792,7 @@ async function clientProjectView(p){
     await db.collection('projects').doc(p.id).update({ viewed:true, viewedAt: firebase.firestore.FieldValue.serverTimestamp() });
     p.viewed = true;
   }
-  const previews = p.files.filter(f=> (f.type||'').startsWith('image/') && (f.url || f.preview));
+  const previews = p.files.filter(f=> ((f.type||'').startsWith('image/') || (f.type||'').startsWith('video/')) && (f.url || f.preview));
   const gallery = previews.length ? previews : p.files;
   return `<div class="center-page"><div style="max-width:560px;width:100%;">
     <div class="card" style="padding:24px;margin-bottom:18px;">
