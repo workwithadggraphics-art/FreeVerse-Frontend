@@ -385,6 +385,7 @@ window.addEventListener('DOMContentLoaded', () => {
   if(parseHash()[0] === 'p') render();
 });
 auth.onAuthStateChanged(async (user) => {
+resolveAuthReady();
   if(user){
     await db.collection('users').doc(user.uid).set({
       name: user.displayName || '',
