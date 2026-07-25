@@ -1380,12 +1380,94 @@ if(authForm){
         submittedAt: firebase.firestore.FieldValue.serverTimestamp()
       };
       await db.collection('projects').doc(id).update({ review });
-      // fire-and-forget: builds the PDF and writes reportUrl back onto the
-      // project doc. Not awaited so the client isn't stuck waiting on it —
-      // the freelancer's review-detail screen already has a jsPDF fallback
-      // for the moment before this finishes.
       backendFetch('/api/generate-report', { projectId:id }, false).catch(err=>console.error('report generation failed', err));
       nav('#/p/'+id+'/thanks');
+    });
+  }
+
+  const profileForm = document.getElementById('profile-form');
+  if(profileForm){
+    profileForm.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(profileForm);
+      const name = fd.get('name').trim();
+      await saveSession({ name, service: fd.get('service') });
+      if(auth.currentUser) await auth.currentUser.updateProfile({ displayName:name });
+      showToast('Profile updated');
+      nav('#/settings');
+    });
+  }
+  const businessForm = document.getElementById('business-form');
+  if(businessForm){
+    businessForm.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(businessForm);
+      await saveSession({ business: fd.get('business')||'', tagline: fd.get('tagline')||'' });
+      showToast('Business info updated');
+      nav('#/settings');
+    });
+  }
+  const emailForm = document.getElementById('email-form');
+  if(emailForm){
+    emailForm.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(emailForm);
+      const btn = emailForm.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Updating…';
+      try{
+        const cred = firebase.auth.EmailAuthProvider.credential(SESSION.email, fd.get('currentPassword'));
+        await auth.currentUser.reauthenticateWithCredential(cred);
+        await auth.currentUser.updateEmail(fd.get('newEmail').trim());
+        await db.collection('users').doc(SESSION.uid).set({ email: fd.get('newEmail').trim() }, { merge:true });
+        showToast('Email updated');
+        await loadSession();
+        nav('#/settings');
+      }catch(err){
+        showToast(err.message || 'Could not update email');
+        btn.disabled = false; btn.textContent = 'Update Email';
+      }
+    });
+  }
+  const pwForm = document.getElementById('pw-form');
+  if(pwForm){
+    pwForm.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const fd = new FormData(pwForm);
+      const btn = pwForm.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = 'Updating…';
+      try{
+        const cred = firebase.auth.EmailAuthProvider.credential(SESSION.email, fd.get('currentPassword'));
+        await auth.currentUser.reauthenticateWithCredential(cred);
+        await auth.currentUser.updatePassword(fd.get('newPassword'));
+        showToast('Password updated');
+        nav('#/settings');
+      }catch(err){
+        showToast(err.message || 'Could not update password');
+        btn.disabled = false; btn.textContent = 'Update Password';
+      }
+    });
+  }
+  const saveNotifBtn = document.getElementById('save-notif-prefs');
+  if(saveNotifBtn){
+    saveNotifBtn.addEventListener('click', async ()=>{
+      const prefs = Object.assign({}, SESSION.prefs, {
+        notifyOnView: document.getElementById('notif-view').checked,
+        notifyOnReview: document.getElementById('notif-review').checked
+      });
+      await saveSession({ prefs });
+      showToast('Preferences saved');
+      nav('#/settings');
+    });
+  }
+  const saveLinkBtn = document.getElementById('save-link-prefs');
+  if(saveLinkBtn){
+    saveLinkBtn.addEventListener('click', async ()=>{
+      const prefs = Object.assign({}, SESSION.prefs, {
+        defaultExpiry: document.getElementById('pref-expiry').checked
+      });
+      await saveSession({ prefs });
+      showToast('Preferences saved');
+      nav('#/settings');
     });
   }
 }
