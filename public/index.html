@@ -425,7 +425,7 @@ async function render(){
       case 'project-created': html = await projectCreatedView(parts[1]); break;
       case 'analytics': html = await analyticsView(); break;
       case 'notifications': html = await notificationsView(); break;
-      case 'settings': html = settingsView(); break;
+      case 'settings': html = parts[1] ? await settingsSubView(parts[1]) : settingsView(); break;
       case 'upgrade': html = upgradeView(); break;
       case 'review': html = await reviewDetailView(parts[1]); break;
       default: html = notFoundView();
