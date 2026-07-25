@@ -348,9 +348,15 @@ async function getMyProjectIds(){
     .get();
   return snap.docs.map(d => d.id);
 }
-async function getProject(id){
+async function getProject(id, attempt){
+  attempt = attempt || 0;
   const doc = await db.collection('projects').doc(id).get();
-  return doc.exists ? Object.assign({ id: doc.id }, doc.data()) : null;
+  if(doc.exists) return Object.assign({ id: doc.id }, doc.data());
+  if(attempt < 2){
+    await new Promise(r => setTimeout(r, 500*(attempt+1)));
+    return getProject(id, attempt+1);
+  }
+  return null;
 }
 async function saveProject(p){
   // owner writes (create/edit) and anonymous client writes (viewed/review)
