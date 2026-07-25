@@ -1073,23 +1073,134 @@ async function analyticsView(){
 
 // ---------------- 17. Settings ----------------
 function settingsView(){
+  const row = (icon,label,href)=>`<a class="list-row" href="${href}" style="color:inherit;"><span>${icon}</span><span style="flex:1;">${label}</span><span>›</span></a>`;
   return `<div class="app-shell">
     ${sidebar('settings')}
     <div class="main">
       ${topbar('Settings')}
       <div class="card" style="max-width:520px;padding:8px 0;">
-        <div class="list-row"><span>👤</span><span style="flex:1;">Profile Information</span><span>›</span></div>
-        <div class="list-row"><span>🏢</span><span style="flex:1;">Business Information</span><span>›</span></div>
-        <div class="list-row"><span>🔒</span><span style="flex:1;">Email & Password</span><span>›</span></div>
-        <div class="list-row"><span>🔗</span><span style="flex:1;">Connected Account</span><span>›</span></div>
-        <div class="list-row"><span>🔔</span><span style="flex:1;">Notification Preferences</span><span>›</span></div>
-        <div class="list-row"><span>🔗</span><span style="flex:1;">Link Preferences</span><span>›</span></div>
-        <div class="list-row"><span>💾</span><span style="flex:1;">Storage & Usage</span><span>›</span></div>
-        <div class="list-row"><span>⭐</span><span style="flex:1;">Upgrade to Pro</span><a href="#/upgrade">›</a></div>
+        ${row('👤','Profile Information','#/settings/profile')}
+        ${row('🏢','Business Information','#/settings/business')}
+        ${row('🔒','Email & Password','#/settings/password')}
+        ${row('🔗','Connected Account','#/settings/account')}
+        ${row('🔔','Notification Preferences','#/settings/notif-prefs')}
+        ${row('🔗','Link Preferences','#/settings/links')}
+        ${row('💾','Storage & Usage','#/settings/storage')}
+        ${row('⭐','Upgrade to Pro','#/upgrade')}
         <div class="list-row" style="color:var(--danger);cursor:pointer;" onclick="doLogout()"><span>⎋</span><span style="flex:1;">Logout</span></div>
       </div>
     </div>
   </div>`;
+}
+
+async function settingsSubView(sub){
+  const shell = (title, inner)=>`<div class="app-shell">
+    ${sidebar('settings')}
+    <div class="main">
+      <div class="tiny-nav"><button onclick="nav('#/settings')">← Back to Settings</button></div>
+      <h2 style="margin-bottom:20px;">${title}</h2>
+      ${inner}
+    </div>
+  </div>`;
+
+  if(sub==='profile'){
+    return shell('Profile Information', `
+      <div class="card" style="padding:26px;max-width:420px;">
+        <form id="profile-form">
+          <div class="field"><label>Your name</label><input required name="name" value="${esc(SESSION.name)}"></div>
+          <div class="field"><label>What do you do?</label>
+            <select required name="service">
+              <option value="">Select your line of service…</option>
+              ${['Graphic Designer','Web/App Developer','Photographer','Videographer','Copywriter / Content Writer','Illustrator','Other'].map(s=>`<option ${SESSION.service===s?'selected':''}>${s}</option>`).join('')}
+            </select></div>
+          <button class="btn btn-primary btn-block" type="submit">Save Changes</button>
+        </form>
+      </div>`);
+  }
+
+  if(sub==='business'){
+    return shell('Business Information', `
+      <div class="card" style="padding:26px;max-width:420px;">
+        <form id="business-form">
+          <div class="field"><label>Business name <span class="opt">(optional)</span></label><input name="business" value="${esc(SESSION.business)}" placeholder="e.g. Adeymi Studios"></div>
+          <div class="field"><label>Tagline <span class="opt">(optional)</span></label><textarea name="tagline" placeholder="A short line clients see">${esc(SESSION.tagline)}</textarea></div>
+          <button class="btn btn-primary btn-block" type="submit">Save Changes</button>
+        </form>
+      </div>`);
+  }
+
+  if(sub==='password'){
+    return shell('Email & Password', `
+      <div class="card" style="padding:26px;max-width:420px;margin-bottom:16px;">
+        <h3 style="margin:0 0 14px;font-size:15px;">Change Email</h3>
+        <form id="email-form">
+          <div class="field"><label>New email</label><input required type="email" name="newEmail" placeholder="new@email.com"></div>
+          <div class="field"><label>Current password</label><input required type="password" name="currentPassword" placeholder="Confirm it's you"></div>
+          <button class="btn btn-primary btn-block" type="submit">Update Email</button>
+        </form>
+      </div>
+      <div class="card" style="padding:26px;max-width:420px;">
+        <h3 style="margin:0 0 14px;font-size:15px;">Change Password</h3>
+        <form id="pw-form">
+          <div class="field"><label>Current password</label><input required type="password" name="currentPassword"></div>
+          <div class="field"><label>New password</label><input required type="password" name="newPassword" minlength="6" placeholder="At least 6 characters"></div>
+          <button class="btn btn-primary btn-block" type="submit">Update Password</button>
+        </form>
+      </div>`);
+  }
+
+  if(sub==='account'){
+    const created = auth.currentUser?.metadata?.creationTime ? new Date(auth.currentUser.metadata.creationTime).toLocaleDateString() : '—';
+    return shell('Connected Account', `
+      <div class="card" style="padding:26px;max-width:420px;">
+        <div class="field"><label>Signed in as</label><div style="font-size:14px;">${esc(SESSION.email)}</div></div>
+        <div class="field"><label>Account created</label><div style="font-size:14px;">${created}</div></div>
+        <div class="field"><label>Plan</label><div style="font-size:14px;text-transform:capitalize;">${SESSION.plan}</div></div>
+      </div>`);
+  }
+
+  if(sub==='notif-prefs'){
+    return shell('Notification Preferences', `
+      <div class="card" style="padding:26px;max-width:420px;">
+        <p class="hint" style="margin-bottom:18px;">These control what shows up in your Notifications feed. Email alerts aren't connected yet — everything here is in-app only for now.</p>
+        <label style="display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:14px;">
+          <input type="checkbox" id="notif-view" ${SESSION.prefs.notifyOnView?'checked':''}> Notify me when a client opens my link
+        </label>
+        <label style="display:flex;align-items:center;gap:10px;margin-bottom:20px;font-size:14px;">
+          <input type="checkbox" id="notif-review" ${SESSION.prefs.notifyOnReview?'checked':''}> Notify me when a client leaves a review
+        </label>
+        <button class="btn btn-primary btn-block" id="save-notif-prefs">Save Changes</button>
+      </div>`);
+  }
+
+  if(sub==='links'){
+    const isPro = SESSION.plan==='pro';
+    return shell('Link Preferences', `
+      <div class="card" style="padding:26px;max-width:420px;">
+        <label style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:14px;${isPro?'':'opacity:.5;'}">
+          <input type="checkbox" id="pref-expiry" ${SESSION.prefs.defaultExpiry?'checked':''} ${isPro?'':'disabled'}> Set links to expire after 30 days by default
+        </label>
+        ${isPro?'':'<p class="hint" style="margin-bottom:18px;">Pro feature — <a href="#/upgrade" style="text-decoration:underline;">upgrade</a> to enable.</p>'}
+        <button class="btn btn-primary btn-block" id="save-link-prefs" ${isPro?'':'disabled'}>Save Changes</button>
+      </div>`);
+  }
+
+  if(sub==='storage'){
+    const ids = await getMyProjectIds();
+    const projects = (await Promise.all(ids.map(getProject))).filter(Boolean);
+    const totalBytes = projects.reduce((s,p)=>s+(p.totalBytes||0),0);
+    const limit = SESSION.plan==='pro' ? 10*1024*1024*1024 : 1024*1024*1024;
+    const pct = Math.min(100,(totalBytes/limit)*100);
+    return shell('Storage & Usage', `
+      <div class="card" style="padding:26px;max-width:420px;">
+        <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">Plan: ${SESSION.plan==='pro'?'Pro (10GB)':'Free (1GB)'}</div>
+        <div class="size-bar"><div class="size-bar-fill ${pct>90?'over':''}" style="width:${pct}%;"></div></div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">${fmtBytes(totalBytes)} of ${fmtBytes(limit)} used across ${projects.length} project${projects.length===1?'':'s'}</div>
+        ${SESSION.plan!=='pro'?`<a href="#/upgrade" class="btn btn-primary btn-block">Upgrade to Pro</a>`:''}
+      </div>`);
+  }
+
+  return notFoundView();
 }
 window.doLogout = async function(){
   await auth.signOut();
