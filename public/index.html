@@ -321,10 +321,13 @@ async function loadSession(){
   SESSION = {
     uid: user.uid,
     name: data.name || user.displayName || '',
+    email: user.email || data.email || '',
     service: data.service || '',
     business: data.business || '',
+    tagline: data.tagline || '',
     avatar: user.photoURL || null,
-    plan: data.plan || 'free'
+    plan: data.plan || 'free',
+    prefs: Object.assign({ notifyOnView:true, notifyOnReview:true, defaultExpiry:false }, data.prefs||{})
   };
 }
 async function saveSession(patch){
