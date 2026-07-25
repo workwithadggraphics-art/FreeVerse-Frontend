@@ -814,7 +814,7 @@ async function clientProjectView(p){
         return `<div class="gallery-item" data-i="${i}" style="${i===0?'':'display:none;'}width:100%;height:100%;">
           ${isVideo
             ? `<video src="${src}" controls playsinline style="width:100%;height:100%;object-fit:contain;background:#000;"></video>`
-            : `<img src="${src}" style="width:100%;height:100%;object-fit:cover;">`}
+            : `<img src="${src}" onclick="openLightbox('${src}')" style="width:100%;height:100%;object-fit:cover;cursor:zoom-in;">`}
         </div>`;
       }).join('')}
       ${gallery.length>1?`<button class="gallery-nav prev" onclick="galleryStep(-1)">‹</button><button class="gallery-nav next" onclick="galleryStep(1)">›</button>
