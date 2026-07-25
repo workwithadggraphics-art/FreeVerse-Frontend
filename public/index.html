@@ -270,6 +270,8 @@ const PREVIEW_MAX_BYTES = 350 * 1024; // only inline-preview images under this s
 
 let SESSION = null; // {uid, name, service, business, avatar, plan}
 let ROUTE = {};
+let resolveAuthReady;
+const authReady = new Promise(res => { resolveAuthReady = res; });
 
 
 function uid(n){ n = n||8; const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<n;i++) s+=c[Math.floor(Math.random()*c.length)]; return s; }
