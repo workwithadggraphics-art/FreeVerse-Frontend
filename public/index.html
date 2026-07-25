@@ -483,18 +483,68 @@ function heroView(){
         const y = 50 + r*Math.sin(angle) - 9.5;
         return `<div class="node orbit" style="left:${x}%;top:${y}%;"><img src="${src}" alt=""></div>`;
       }).join('')}
+   </div>
+  </div>
+
+  <section id="features-section" style="padding:60px 32px;border-top:1px solid var(--line);">
+    <h2 style="font-size:28px;margin:0 0 32px;text-align:center;">Everything you need to hand off work</h2>
+    <div style="display:grid;gap:24px;max-width:900px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+      <div class="card" style="padding:24px;">
+        <div style="font-size:26px;margin-bottom:10px;">🔗</div>
+        <h3 style="font-size:16px;margin:0 0 8px;">One link, done</h3>
+        <p style="color:var(--ink-2);font-size:14px;margin:0;">Upload once, get a shareable link — no more zip files over email.</p>
+      </div>
+      <div class="card" style="padding:24px;">
+        <div style="font-size:26px;margin-bottom:10px;">👀</div>
+        <h3 style="font-size:16px;margin:0 0 8px;">Know when it's seen</h3>
+        <p style="color:var(--ink-2);font-size:14px;margin:0;">Get notified the moment your client opens the link.</p>
+      </div>
+      <div class="card" style="padding:24px;">
+        <div style="font-size:26px;margin-bottom:10px;">⭐</div>
+        <h3 style="font-size:16px;margin:0 0 8px;">Real feedback, on record</h3>
+        <p style="color:var(--ink-2);font-size:14px;margin:0;">Star ratings and reviews, turned into a shareable PDF automatically.</p>
+      </div>
     </div>
-  </div>`;
+  </section>
+
+  <section id="how-it-works-section" style="padding:60px 32px;border-top:1px solid var(--line);background:var(--cream-2);">
+    <h2 style="font-size:28px;margin:0 0 32px;text-align:center;">How it works</h2>
+    <div style="display:grid;gap:24px;max-width:900px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
+      <div style="text-align:center;">
+        <div class="serif" style="font-size:34px;color:var(--gold);margin-bottom:8px;">1</div>
+        <h3 style="font-size:15px;margin:0 0 6px;">Upload your work</h3>
+        <p style="color:var(--ink-2);font-size:13px;">Drop in designs, photos, or video — up to 1GB free.</p>
+      </div>
+      <div style="text-align:center;">
+        <div class="serif" style="font-size:34px;color:var(--gold);margin-bottom:8px;">2</div>
+        <h3 style="font-size:15px;margin:0 0 6px;">Share the link</h3>
+        <p style="color:var(--ink-2);font-size:13px;">Send it to your client — no account needed on their end.</p>
+      </div>
+      <div style="text-align:center;">
+        <div class="serif" style="font-size:34px;color:var(--gold);margin-bottom:8px;">3</div>
+        <h3 style="font-size:15px;margin:0 0 6px;">Get reviewed</h3>
+        <p style="color:var(--ink-2);font-size:13px;">They rate and review — you get notified and get a PDF report.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing-section" style="padding:60px 32px;border-top:1px solid var(--line);">
+    <h2 style="font-size:28px;margin:0 0 32px;text-align:center;">Simple pricing</h2>
+    <div style="display:grid;gap:20px;max-width:640px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));">
+      <div class="card" style="padding:26px;">
+        <h3 style="font-size:16px;margin:0 0 4px;">Free</h3>
+        <div class="serif" style="font-size:28px;margin:8px 0;">$0</div>
+        <p style="color:var(--ink-2);font-size:14px;">1GB storage, unlimited projects, reviews & ratings, PDF reports.</p>
+      </div>
+      <div class="card" style="padding:26px;border-color:var(--ink);">
+        <h3 style="font-size:16px;margin:0 0 4px;">Pro</h3>
+        <div class="serif" style="font-size:28px;margin:8px 0;">$9<span style="font-size:14px;font-weight:400;">/mo</span></div>
+        <p style="color:var(--ink-2);font-size:14px;">10GB storage, custom branding, password-protected links, priority support.</p>
+      </div>
+    </div>
+  </section>`;
 }
 function radialSvg(){
-  // connecting lines from center to each orbit node, drawn in SVG percent coords
-  const lines = CLIENT_AVATARS.map((_,i)=>{
-    const angle = (i/CLIENT_AVATARS.length) * 2*Math.PI - Math.PI/2;
-    const x2 = 50 + 40*Math.cos(angle), y2 = 50 + 40*Math.sin(angle);
-    return `<line x1="50" y1="50" x2="${x2}" y2="${y2}" stroke="#C9BFA1" stroke-width="0.6" stroke-dasharray="2 3"/>`;
-  }).join('');
-  return `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">${lines}</svg>`;
-}
 
 // ---------------- 1. Sign in with Google ----------------
 let AUTH_MODE = 'signup';
