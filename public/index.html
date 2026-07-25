@@ -552,6 +552,13 @@ function heroView(){
   </section>`;
 }
 function radialSvg(){
+  const lines = CLIENT_AVATARS.map((_,i)=>{
+    const angle = (i/CLIENT_AVATARS.length) * 2*Math.PI - Math.PI/2;
+    const x2 = 50 + 40*Math.cos(angle), y2 = 50 + 40*Math.sin(angle);
+    return `<line x1="50" y1="50" x2="${x2}" y2="${y2}" stroke="#C9BFA1" stroke-width="0.6" stroke-dasharray="2 3"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">${lines}</svg>`;
+}
 
 // ---------------- 1. Sign in with Google ----------------
 let AUTH_MODE = 'signup';
