@@ -604,14 +604,15 @@ function sidebar(active, unread){
 function topbar(title){
   const av = SESSION.avatar ? `<img src="${SESSION.avatar}">` : initials(SESSION.name);
   return `<div class="topbar">
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
     <h2 style="margin:0;font-weight:500;font-size:22px;">${title}</h2>
     <div class="topbar-right">
       <a class="icon-btn" href="#/notifications">🔔</a>
+      <button class="icon-btn" onclick="doLogout()" title="Log out">⎋</button>
       <div class="avatar">${av}</div>
     </div>
   </div>`;
 }
-
 // ---------------- 5. Dashboard ----------------
 async function dashboardView(){
   const ids = await getMyProjectIds();
