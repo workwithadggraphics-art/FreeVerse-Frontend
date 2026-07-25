@@ -476,6 +476,7 @@ const WELCOME_LINES = [
 function heroView(){
   const line = WELCOME_LINES[Math.floor(Math.random()*WELCOME_LINES.length)];
   return `
+  <div class="landing-grid">
   <div class="nav">
     <div class="logo">FreeVerse</div>
 <div class="nav-links">
@@ -565,7 +566,8 @@ function heroView(){
         <p style="color:var(--ink-2);font-size:14px;">10GB storage, custom branding, password-protected links, priority support.</p>
       </div>
     </div>
-  </section>`;
+  </section>
+  </div>`;
 }
 function radialSvg(){
   const lines = CLIENT_AVATARS.map((_,i)=>{
