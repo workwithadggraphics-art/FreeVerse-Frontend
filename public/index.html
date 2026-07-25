@@ -912,9 +912,18 @@ window.downloadProjectFiles = async function(id){
   if(!p) return;
   for(const f of p.files){
     if(!f.url){ console.error('no url for', f.name); continue; }
-    const a = document.createElement('a');
-    a.href = f.url; a.download = f.name; a.target = '_blank';
-    document.body.appendChild(a); a.click(); a.remove();
+    try{
+      const res = await fetch(f.url);
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl; a.download = f.name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(blobUrl), 10000);
+    }catch(err){
+      console.error('download failed for', f.name, err);
+      showToast('Could not download ' + f.name);
+    }
   }
 };
 window.openLightbox = function(src){
