@@ -1040,8 +1040,9 @@ async function reviewDetailView(id){
 
 // ---------------- 14. PDF preview + real generation ----------------
 async function pdfView(id){
-  const p = await getProject(id);
-  if(!p || !p.review) return notFoundView();
+  let p = await getProject(id);
+  if (!p) { await new Promise(r => setTimeout(r, 600)); p = await getProject(id); }
+  if (!p || !p.review) return notFoundView();
   return `<div class="app-shell">
     ${sidebar('dashboard')}
     <div class="main">
