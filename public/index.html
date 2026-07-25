@@ -457,8 +457,10 @@ function heroView(){
   return `
   <div class="nav">
     <div class="logo">FreeVerse</div>
-    <div class="nav-links">
-      <a href="#">Features</a><a href="#">How it works</a><a href="#">Pricing</a>
+<div class="nav-links">
+      <a href="javascript:void(0)" onclick="scrollToSection('features-section')">Features</a>
+      <a href="javascript:void(0)" onclick="scrollToSection('how-it-works-section')">How it works</a>
+      <a href="javascript:void(0)" onclick="scrollToSection('pricing-section')">Pricing</a>
       <a href="#/signin">Login</a>
       <a href="#/signin" class="btn btn-primary btn-sm">Get Started</a>
     </div>
