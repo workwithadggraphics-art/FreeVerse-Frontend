@@ -739,7 +739,7 @@ async function dashboardView(){
   </div>`;
 }
 function emptyProjects(){
-  return `<div class="empty"><h3>No projects yet</h3><p>Create your first project to get a shareable client link.</p></div>`;
+  return `<div class="empty"><div style="font-size:34px;margin-bottom:10px;">📁</div><h3>No projects yet</h3><p>Create your first project to get a shareable client link.</p><a href="#/create-project" class="btn btn-primary btn-sm" style="margin-top:14px;">+ Create Project</a></div>`;
 }
 function projectRow(p){
   const thumb = p.files.find(f=> (f.type||'').startsWith('image/') && (f.url || f.preview));
