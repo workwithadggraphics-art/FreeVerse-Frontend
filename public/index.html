@@ -781,7 +781,7 @@ function projectRow(p){
       <div class="row-sub">${p.clientName?esc(p.clientName)+' · ':''}${fmtDate(p.createdAt)}</div>
     </div>
     ${p.review ? `<span class="stars">${'★'.repeat(p.review.rating)}${'☆'.repeat(5-p.review.rating)}</span>`
-      : p.viewed ? `<span class="pill">Viewed</span>` : `<span class="pill">Pending Review</span>`}
+      : p.viewed ? `<span class="pill pill-viewed">Viewed</span>` : `<span class="pill">Pending Review</span>`}
     <a href="#/review/${p.id}" style="font-size:12px;color:var(--ink-2);margin-left:10px;">Open →</a>
   </div>`;
 }
