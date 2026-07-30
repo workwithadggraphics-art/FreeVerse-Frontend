@@ -426,6 +426,7 @@ await authReady;
   let html = '';
   try{
     if(parts[0] === 'p' && parts[1]){
+      if(!parts[2]) app.innerHTML = centerSkeleton();
       const project = await getProject(parts[1]);
       if(!project){ html = notFoundView(); }
       else if(parts[2] === 'review'){ html = await clientReviewView(project); }
