@@ -440,6 +440,9 @@ await authReady;
       nav('#/'); return;
     }
 
+    if(SESSION && ['dashboard','projects','analytics','notifications'].includes(parts[0])) app.innerHTML = appSkeleton();
+    if(SESSION && ['review','project-created'].includes(parts[0])) app.innerHTML = centerSkeleton();
+
     switch(parts[0]){
       case undefined:
       case '': html = heroView(); break;
