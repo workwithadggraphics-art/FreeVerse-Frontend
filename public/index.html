@@ -1625,6 +1625,7 @@ render = async function(){
   const parts = parseHash();
   if(parts[0]==='pdf' && parts[1]){
     if(!SESSION){ nav('#/'); return; }
+    document.getElementById('app').innerHTML = centerSkeleton();
     document.getElementById('app').innerHTML = await pdfView(parts[1]);
     bindEvents();
     return;
